@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -196,7 +196,7 @@ const getImpactBadge = (impact: string) => {
   }
 }
 
-export default function ICPPage() {
+function ICPPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [loading, setLoading] = useState(true)
@@ -1169,5 +1169,30 @@ export default function ICPPage() {
         </motion.div>
       </main>
     </div>
+  )
+}
+
+function ICPPageLoading() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-50 dark:from-purple-950/20 dark:via-violet-950/20 dark:to-indigo-950/20 flex items-center justify-center">
+      <div className="text-center max-w-md mx-auto p-8">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+          className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-purple-600 to-violet-600 flex items-center justify-center"
+        >
+          <Brain className="w-10 h-10 text-white" />
+        </motion.div>
+        <h2 className="text-2xl font-bold mb-4 gradient-text">Carregando ICP...</h2>
+      </div>
+    </div>
+  )
+}
+
+export default function ICPPage() {
+  return (
+    <Suspense fallback={<ICPPageLoading />}>
+      <ICPPageContent />
+    </Suspense>
   )
 }
